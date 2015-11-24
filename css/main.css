@@ -21,3 +21,16 @@ body {
 h3 {
     margin-top: 0;
 }
+
+.commentName {
+    color: #337ab7;
+    font-weight: bold;
+}
+
+textarea {
+    width: 100%;
+}
+
+#postStatusBtn {
+    text-align: right;
+}

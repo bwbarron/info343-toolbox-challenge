@@ -1,0 +1,29 @@
+[
+  {
+    "id": "1",
+    "user": "brandon",
+    "text": "comment what you think about me",
+    "imgUrl": null,
+    "likes": 42,
+    "comments": [
+      {
+        "id": "1",
+        "user": "andy",
+        "text": "go home"
+      },
+      {
+        "id": "2",
+        "user": "mom",
+        "text": "you suck"
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "user": "andy",
+    "text": "blah blah blah blah",
+    "imgUrl": null,
+    "likes": 0,
+    "comments": []
+  }
+]
