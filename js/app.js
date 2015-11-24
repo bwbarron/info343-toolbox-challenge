@@ -14,7 +14,11 @@ var NewsFeed = React.createClass({
     render: function () {
         var statusList = this.state.data.map(function (post) {
             return (
-                <StatusContainer key={post.id} user={post.user} data={post} firebaseRefs={this.firebaseRefs} />
+                <StatusContainer
+                    key={post[".key"]}
+                    postKey={post[".key"]}
+                    user={post.user} data={post}
+                    firebaseRefs={this.firebaseRefs} />
             );
         }.bind(this));
         return (this.state.user) ?
@@ -45,7 +49,7 @@ var PostStatus = React.createClass({
             return;
         this.props.firebaseRefs.data.push({
             id: Date.now(),
-            user: this.props.user || "",
+            user: this.props.user,
             text: text,
             likes: 0,
             comments: []
@@ -74,10 +78,12 @@ var PostStatus = React.createClass({
 // container for each status
 var StatusContainer = React.createClass({
     render: function () {
+        console.log("key: " + this.props.postKey);
         return (
             <div className="statusContainer">
                 <Status data={this.props.data} />
                 <CommentContainer
+                    postKey={this.props.key}
                     user={this.props.user}
                     data={this.props.data}
                     firebaseRefs={this.props.firebaseRefs}
@@ -88,7 +94,7 @@ var StatusContainer = React.createClass({
 });
 
 
-// section containing individual status text/image
+// section containing status text
 var Status = React.createClass({
     render: function () {
         return (
@@ -105,8 +111,14 @@ var Status = React.createClass({
 
 // container that holds all comments for a particular status
 var CommentContainer = React.createClass({
+    mixins: [ReactFireMixin],
+    componentWillMount: function () {
+        var ref = new Firebase("https://info343-newsfeed.firebaseio.com/posts/" + this.props.postKey);
+        this.bindAsObject(ref, "post");
+    },
     handleCommentSubmit: function (comment) {
-        //this.props.firebaseRefs.data.push({
+        // use this.props.postKey to get post object, then add to comments array
+        //this.firebaseRefs.comments.push({
         //    id: Date.now(),
         //    user: this.props.user,
         //    text: comment
