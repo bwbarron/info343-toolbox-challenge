@@ -1,44 +1,74 @@
 // container for all news feed elements
-var NewsFeed = React.createClass({ // TODO: store user name in this component and pass to children, prompt for name if none set
+var NewsFeed = React.createClass({
+    mixins: [ReactFireMixin],
     getInitialState: function () {
-        return {user: null, data: []};
+        return {user: "", data: []};
     },
-    loadPosts: function () {
-        $.getJSON("data/posts.json").then(function (data) {
-            this.setState({data: data});
-        }.bind(this));
+    componentWillMount: function () {
+        var ref = new Firebase("https://info343-newsfeed.firebaseio.com/posts");
+        this.bindAsArray(ref, "data");
+    },
+    setUser: function (name) {
+        this.setState({user: name});
     },
     render: function () {
-        this.loadPosts();
         var statusList = this.state.data.map(function (post) {
             return (
-                <StatusContainer key={post.id} user={post.user} data={post} />
+                <StatusContainer key={post.id} user={post.user} data={post} firebaseRefs={this.firebaseRefs} />
             );
-        });
-        return (
-            <div className="newsfeed">
-                <h1>News Feed</h1>
-                <PostStatus />
-                {statusList}
-            </div>
-        );
+        }.bind(this));
+        return (this.state.user) ?
+            (
+                <div className="newsfeed">
+                    <h1>News Feed</h1>
+                    <PostStatus user={this.state.user} firebaseRefs={this.firebaseRefs} />
+                    {statusList.reverse()}
+                </div>
+            )
+            : <SignIn onSignIn={this.setUser} />;
     }
 });
-
 
 
 // section for posting a new status
 var PostStatus = React.createClass({
+    getInitialState: function () {
+        return {text: ""};
+    },
+    handleTextChange: function (e) {
+        this.setState({text: e.target.value});
+    },
+    post: function (e) {
+        e.preventDefault();
+        var text = this.state.text.trim();
+        if (!text)
+            return;
+        this.props.firebaseRefs.data.push({
+            id: Date.now(),
+            user: this.props.user || "",
+            text: text,
+            likes: 0,
+            comments: []
+        });
+        this.setState({text: ""});
+    },
     render: function () {
         return (
             <div className="postStatus">
-                <textarea className="form-control" rows="3" placeholder="What's on your mind?" />
-                <button className="btn btn-primary" id="postStatusBtn">Post</button>
+                <form className="form-group" onSubmit={this.post}>
+                    <textarea
+                        className="form-control"
+                        rows="3"
+                        placeholder="What's on your mind?"
+                        value={this.state.text}
+                        onChange={this.handleTextChange}/>
+                    <input type="submit" className="btn btn-primary" id="postStatusBtn" value="Post" />
+                </form>
+
             </div>
         );
     }
 });
-
 
 
 // container for each status
@@ -47,12 +77,15 @@ var StatusContainer = React.createClass({
         return (
             <div className="statusContainer">
                 <Status data={this.props.data} />
-                <CommentContainer user={this.props.user} data={this.props.data} />
+                <CommentContainer
+                    user={this.props.user}
+                    data={this.props.data}
+                    firebaseRefs={this.props.firebaseRefs}
+                />
             </div>
         );
     }
 });
-
 
 
 // section containing individual status text/image
@@ -62,7 +95,6 @@ var Status = React.createClass({
             <div className="status">
                 <h3>{this.props.data.user}</h3>
                 <p>{this.props.data.text}</p>
-                <img src={this.props.data.imgUrl} alt="" />
                 <button>Like</button>
                 <button>Comment</button>
             </div>
@@ -71,32 +103,40 @@ var Status = React.createClass({
 });
 
 
-
 // container that holds all comments for a particular status
 var CommentContainer = React.createClass({
+    handleCommentSubmit: function (comment) {
+        //this.props.firebaseRefs.data.push({
+        //    id: Date.now(),
+        //    user: this.props.user,
+        //    text: comment
+        //});
+    },
     render: function () {
         return (
             <div className="commentContainer">
                 <p>{this.props.data.likes} people like this</p>
                 <CommentList comments={this.props.data.comments} />
-                <PostComment user={this.props.user} />
+                <PostComment user={this.props.user} onCommentSubmit={this.handleCommentSubmit} />
             </div>
         );
     }
 });
 
 
-
 // list of comments for a status
 var CommentList = React.createClass({
     render: function () {
-        var comments = this.props.comments.map(function (comment) {
-            return (
-                <div className="comment" key={comment.id}>
-                    <p><span className="commentName">{comment.user}</span> {comment.text}</p>
-                </div>
-            );
-        });
+        var comments;
+        if (this.props.comments) {
+            comments = this.props.comments.map(function (comment) {
+                return (
+                    <div className="comment" key={comment.id}>
+                        <p><span className="commentName">{comment.user}</span> {comment.text}</p>
+                    </div>
+                );
+            });
+        }
         return (
             <div className="commentList">
                 {comments}
@@ -106,14 +146,69 @@ var CommentList = React.createClass({
 });
 
 
-
 // section for user to post a comment on a status
 var PostComment = React.createClass({
+    getInitialState: function () {
+        return {text: ""};
+    },
+    handleTextChange: function (e) {
+        this.setState({text: e.target.value})
+    },
+    submit: function (e) {
+        e.preventDefault();
+        var text = this.state.text.trim();
+        if (!text)
+            return;
+        this.props.onCommentSubmit(text);
+        this.setState({text: ""});
+    },
     render: function () {
         return (
             <div className="postComment">
-                <input className="form-control" type="text" placeholder="Write a comment" />
-                <button className="btn btn-primary">Post</button>
+                <form className="form-group" onSubmit={this.submit}>
+                    <input
+                        className="form-control"
+                        type="text"
+                        placeholder="Write a comment"
+                        value={this.state.text}
+                        onChange={this.handleTextChange}
+                    />
+                    <input type="submit" className="btn btn-primary" value="Post" />
+                </form>
+            </div>
+        );
+    }
+});
+
+
+// sign in form
+var SignIn = React.createClass({
+    getInitialState: function () {
+        return {name: ""};
+    },
+    handleTextChange: function (e) {
+        this.setState({name: e.target.value});
+    },
+    signIn: function (e) {
+        e.preventDefault();
+        var name = this.state.name.trim();
+        if (!name)
+            return;
+        this.props.onSignIn(name);
+        this.setState({name: ""});
+    },
+    render: function () {
+        return (
+            <div className="signin">
+                <form className="form-group" onSubmit={this.signIn}>
+                    <h2>Please enter your name</h2>
+                    <input
+                        type="text"
+                        className="form-control"
+                        onChange={this.handleTextChange}
+                        value={this.state.name} />
+                    <input type="submit" className="btn btn-primary" value="Sign In" />
+                </form>
             </div>
         );
     }

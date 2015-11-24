@@ -3,7 +3,6 @@
     "id": "1",
     "user": "brandon",
     "text": "comment what you think about me",
-    "imgUrl": null,
     "likes": 42,
     "comments": [
       {
@@ -22,7 +21,6 @@
     "id": "2",
     "user": "andy",
     "text": "blah blah blah blah",
-    "imgUrl": null,
     "likes": 0,
     "comments": []
   }
