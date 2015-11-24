@@ -1,0 +1,23 @@
+body {
+    background-color: #eee;
+}
+
+.container {
+    width: 60%;
+}
+
+.postStatus, .statusContainer {
+    margin: 1em;
+    padding: 1em;
+    background-color: #fff;
+    border-radius: 4px;
+}
+
+.status {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1em;
+}
+
+h3 {
+    margin-top: 0;
+}
