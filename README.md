@@ -16,6 +16,6 @@ If you want to run it locally, you simply need a web server to run it on in orde
 
 ##Resources
 
-* [Outline](https://facebook.github.io/react/docs/thinking-in-react.html) explaining how to approach building a web app with React
+* [Outline explaining how to approach building a web app with React](https://facebook.github.io/react/docs/thinking-in-react.html)
 * [React Documentation](https://facebook.github.io/react/docs/top-level-api.html)
 * [Here's a helpful tutorial](https://facebook.github.io/react/docs/tutorial.html)
