@@ -1,26 +1,44 @@
 body {
-    background-color: #eee;
+    background-color: rgb(233, 234, 237);
 }
 
 .container {
-    width: 60%;
+    width: 50%;
 }
 
 .postStatus, .statusContainer {
     margin: 1em;
-    padding: 1em;
     background-color: #fff;
+    border: 1px solid #ddd;
     border-radius: 4px;
+    overflow: hidden;
+}
+
+.status, .likeStats, .statusTextContainer {
+    border-bottom: 1px solid #ddd;
+}
+
+.statusTextContainer {
+    border-top: 1px solid #ddd;
+}
+
+.status, .postStatus {
+    padding: 1em;
 }
 
 .status {
-    border-bottom: 1px solid #eee;
-    padding-bottom: 1em;
+    padding-bottom: 0;
+}
+
+.commentContainer {
+    padding: 0 1em 1em 1em;
+    background-color: rgb(246, 247, 248);
 }
 
 h3 {
     margin-top: 0;
     color: #337ab7;
+    font-size: 20px;
 }
 
 .commentName {
@@ -33,5 +51,65 @@ textarea {
 }
 
 #postStatusBtn {
-    text-align: right;
+    float: right;
+}
+
+#signInBtn, #postStatusBtn {
+    margin-top: 1em;
+}
+
+.likeBtnArea {
+    border-top: 1px solid #ddd;
+    color: rgb(127, 127, 127);
+}
+
+.likeStats, .likeBtnArea {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+}
+
+.commentForm {
+    margin-top: 2em;
+    margin-bottom: 0;
+}
+
+.commentList {
+    padding-top: 1em;
+}
+
+#comment {
+    margin-bottom: 0.4em;
+}
+
+#likeBtn {
+    color: rgb(127, 127, 127);
+    font-weight: bold;
+}
+
+a:hover {
+    cursor: pointer;
+}
+
+.statusTextArea, .statusTextArea:focus {
+    resize: none;
+    border: none;
+    border-radius: 0;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    outline: none;
+}
+
+#signIn, #signIn:focus, .commentBox, .commentBox:focus {
+    border: 1px solid #ccc;
+    border-radius: 0;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    outline: none;
+}
+
+.postStatusHeader {
+    height: 2em;
+    font-weight: bold;
 }
