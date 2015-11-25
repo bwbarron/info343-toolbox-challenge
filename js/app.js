@@ -96,11 +96,15 @@ var StatusContainer = React.createClass({
 
 // section containing status text
 var Status = React.createClass({
+    getInitialState: function () {
+        return {liked: false};
+    },
     likeStatus: function () {
         var ref = new Firebase("https://info343-newsfeed.firebaseio.com/posts/" + this.props.postKey);
+        this.setState({liked: !this.state.liked});
         ref.child("likes").transaction(function (likes) {
-            return ++likes;
-        });
+            return (this.state.liked) ? --likes : ++likes;
+        }.bind(this));
     },
     render: function () {
         return (
@@ -108,8 +112,8 @@ var Status = React.createClass({
                 <h3>{this.props.data.user}</h3>
                 <p>{this.props.data.text}</p>
                 <div className="likeBtnArea">
-                    <i className="fa fa-thumbs-up"></i><span> </span>
-                    <a id="likeBtn" onClick={this.likeStatus}>Like</a>
+                    <i className="fa fa-thumbs-up" id={this.state.liked ? "liked" : ""}></i><span> </span>
+                    <a id={this.state.liked ? "liked" : ""} className="likeBtn" onClick={this.likeStatus}>Like</a>
                 </div>
 
             </div>

@@ -81,7 +81,7 @@ textarea {
     margin-bottom: 0.4em;
 }
 
-#likeBtn {
+.likeBtn {
     color: rgb(127, 127, 127);
     font-weight: bold;
 }
@@ -112,4 +112,8 @@ a:hover {
 .postStatusHeader {
     height: 2em;
     font-weight: bold;
+}
+
+#liked {
+    color: #1a75ff;
 }
